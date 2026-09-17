@@ -94,7 +94,7 @@
 `[ ]` — запланировано, `[~]` — в работе, `[x]` — готово.
 
 ### Этап 1. Базовая разработка
-- [ ] Структура проекта, `pyproject.toml`, `requirements.txt`
+- [ ] Структура проекта, `requirements.txt`
 - [ ] `models.py` — dataclass `Vacancy`
 - [ ] `client.py` — HTTP-клиент hh.ru
 - [ ] `parser.py` — `parse_vacancy` / `parse_vacancies`

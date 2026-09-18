@@ -1,0 +1,52 @@
+{
+  "items": [
+    {
+      "id": "0123456789abcdef",
+      "title": "Python-разработчик",
+      "first_name": "Иван",
+      "last_name": "Иванов",
+      "area": {
+        "id": "1",
+        "name": "Москва"
+      },
+      "salary": {
+        "amount": 200000,
+        "currency": "RUR"
+      },
+      "alternate_url": "https://hh.ru/resume/0123456789abcdef",
+      "work_format": [
+        { "id": "REMOTE", "name": "Удалённо" },
+        { "id": "HYBRID", "name": "Гибрид" }
+      ]
+    },
+    {
+      "id": "fedcba9876543210",
+      "title": "Backend-разработчик",
+      "first_name": "Мария",
+      "last_name": "Петрова",
+      "area": {
+        "id": "2",
+        "name": "Санкт-Петербург"
+      },
+      "salary": null,
+      "alternate_url": "https://hh.ru/resume/fedcba9876543210",
+      "work_format": [
+        { "id": "OFFICE", "name": "Офис" }
+      ]
+    },
+    {
+      "id": "aaaabbbbccccdddd",
+      "title": "QA Engineer",
+      "first_name": null,
+      "last_name": null,
+      "area": null,
+      "salary": null,
+      "alternate_url": "https://hh.ru/resume/aaaabbbbccccdddd",
+      "work_format": null
+    }
+  ],
+  "found": 3,
+  "pages": 1,
+  "per_page": 20,
+  "page": 0
+}

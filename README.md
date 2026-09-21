@@ -15,17 +15,6 @@
 
 ---
 
-## Зачем этот проект
-
-Я откликаюсь на позиции **Junior Python Developer** и **Junior QA Engineer**.
-Чтобы показать обе стороны, я делаю один проект, где видно:
-
-- как я **пишу код** — модули, dataclass'ы, разделение слоёв, типизация;
-- как я **тестирую код** — unit, integration, UI-тесты, моки, фикстуры, coverage;
-- как я **организую процесс** — CI, документация, тест-кейсы, чек-листы.
-
----
-
 ## Что делает проект
 
 1. Забирает вакансии с hh.ru по поисковому запросу.
@@ -92,14 +81,17 @@
 ```
 tests/
 ├── __init__.py
-├── conftest.py                        # общие фикстуры проекта
-└── parser/                            # тесты модуля parser
+├── parser/                            # тесты модуля parser
+│   ├── __init__.py
+│   ├── conftest.py                    # фикстуры: HHResume, HHArea, HHSalary, HHWorkFormat
+│   ├── fixtures/
+│   │   ├── hh_resume_one.json         # одно резюме (проверка HHResume отдельно)
+│   │   └── hh_resume_search.json      # обёртка ответа: 3 резюме (полное, без salary, без area)
+│   └── test_mappers.py                # unit-тесты hh_resume_to_domain и hh_response_to_domain_list
+└── jobs/                              # тесты модуля jobs
     ├── __init__.py
-    ├── conftest.py                    # фикстуры: HHResume, HHArea, HHSalary, HHWorkFormat
-    ├── fixtures/
-    │   ├── hh_resume_one.json         # одно резюме (проверка HHResume отдельно)
-    │   └── hh_resume_search.json      # обёртка ответа: 3 резюме (полное, без salary, без area)
-    └── test_mappers.py                # unit-тесты hh_resume_to_domain и hh_response_to_domain_list
+    ├── conftest.py                    # фикстура job (ParseJob в PENDING)
+    └── test_parse_job.py              # unit-тесты ParseJob: переходы, события, дефолты
 ```
 ---
 ## TODO — публичный роадмап
@@ -117,24 +109,24 @@ tests/
 
 ### Этап 2. DTO + роутер
 - [~] `src/jobs/schemas.py`
-- [ ] `src/jobs/router.py` эндпоинты-заглушки
+- [~] `src/jobs/router.py` эндпоинты-заглушки
 - [ ] Проверка в `/docs` (Swagger видит схемы и эндпоинты)
 
 ### Этап 3. Домен
-- [ ] `src/jobs/domain/value_objects.py` — `JobStatus` (StrEnum)
-- [ ] `src/jobs/domain/events.py`
-- [ ] `src/jobs/domain/entities.py`
-- [ ] `src/jobs/domain/exceptions.py`
+- [x] `src/jobs/domain/value_objects.py` — `JobStatus` (StrEnum)
+- [x] `src/jobs/domain/events.py`
+- [x] `src/jobs/domain/entities.py`
+- [x] `src/jobs/domain/exceptions.py`
 - [x] `src/parser/domain/entities.py`
-- [ ] Юнит-тесты домена:
-  - [ ] переходы состояний
-  - [ ] накопление событий
+- [x] Юнит-тесты домена:
+  - [x] переходы состояний
+  - [x] накопление событий
 
 ### Этап 4. Персистентность (ORM + репозиторий)
 - [ ] `src/jobs/models.py` — SQLAlchemy ORM
 - [ ] `src/jobs/repository.py`
 - [ ] `src/jobs/infrastructure/repository.py`
-- [ ] `src/jobs/mappers.py`
+- [~] `src/jobs/mappers.py`
 - [ ] Alembic:
   - [ ] `alembic init`
   - [ ] Настройка `env.py` под async engine
@@ -236,6 +228,6 @@ tests/
 TODO-лист — синхронизирован с задачами.
 
 - **Начало проекта:** сентябрь 2026
-- **Текущий этап:** 1-2
+- **Текущий этап:** написаны домены, перехожу к роутерам
 
 ---

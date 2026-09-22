@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from src.config import settings
+
+from src.jobs.router import router as jobs_router
 
 
 app_configs = {"title": "Parser Service"}
@@ -10,3 +11,5 @@ app = FastAPI(**app_configs)
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
+app.include_router(jobs_router)

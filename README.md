@@ -19,7 +19,7 @@
 
 1. Забирает вакансии с hh.ru по поисковому запросу.
 2. Парсит сырой JSON в domain-модели.
-3. Сохраняет результат в JSON / CSV / SQLite.
+3. Сохраняет результат в PostgreSQL.
 4. Умеет считать статистику: средняя зарплата, топ-навыков, распределение по компаниям.
 5. Показывает результаты в простом веб-UI.
 
@@ -29,22 +29,29 @@
 
 **Разработка**
 - Python 3.13
-- `requests` — HTTP-клиент
-- `dataclasses` — domain-модели
-- `sqlite3` — хранилище (без ORM)
-- `argparse` / `typer` — CLI
+- **FastAPI**
+- **Pydantic v2** + `pydantic-settings`
+- **SQLAlchemy 2.0 (async)** + `asyncpg`
+- **Alembic**
+- `httpx`
+- `dataclasses`
+- **Celery**
+- **Redis**
+- **PostgreSQL**
 
 **Тестирование**
-- `pytest` — фреймворк
-- `pytest-mock` — моки
-- `responses` — мок HTTP-слоя
-- `pytest-cov` — покрытие
-- `Playwright` — UI-тесты
+- `pytest` + `pytest-asyncio`
+- `pytest-mock`
+- `respx`
+- `pytest-cov`
+- `httpx.ASGITransport`
+- `Playwright`
 
 **Инфраструктура**
-- GitHub Actions — CI на каждый push
-- `ruff` — линтер + форматтер
-- `mypy` — статическая типизация
+- Docker + docker-compose
+- GitHub Actions
+- `ruff`
+- `mypy`
 
 ---
 ## Архитектура
@@ -53,19 +60,6 @@
 **best practices FastAPI** — слои разделены, домен изолирован от
 инфраструктуры, границы приложения описаны через Pydantic.
 
-
-### Ключевые решения
-
-- **Domain — на `@dataclass`**, без Pydantic/SQLAlchemy. Чистый Python,
-  легко тестируется, не зависит от фреймворков.
-- **DTO — на Pydantic**, только на границе (request/response, конфиг).
-- **Domain Events** — `@dataclass(frozen=True)`. Агрегат копит их в `_events`,
-  Application Service публикует после `save`.
-- **Repository** — `Protocol` в Domain, реализация — в Infrastructure.
-- **Мапперы** между domain, DTO и ORM — отдельным слоем.
-- **Dependency Injection** — через `Depends` FastAPI: репозиторий, сервис,
-  HTTP-клиент.
----
 
 ## Быстрый старт
 
@@ -103,14 +97,14 @@ tests/
 - [x] `.gitignore`, `.env.example`
 - [x] `src/config.py` — `BaseSettings` (DATABASE_URL, REDIS_URL, ENVIRONMENT)
 - [x] `src/main.py` — FastAPI app + `/health`
-- [ ] `src/database.py` — async engine, `async_sessionmaker`, `get_session`
+- [~] `src/database.py` — async engine, `async_sessionmaker`, `get_session`
 - [x] Скрытие docs в проде
 - [ ] Глобальные exception хендлеры
 
 ### Этап 2. DTO + роутер
-- [~] `src/jobs/schemas.py`
-- [~] `src/jobs/router.py` эндпоинты-заглушки
-- [ ] Проверка в `/docs` (Swagger видит схемы и эндпоинты)
+- [x] `src/jobs/schemas.py`
+- [x] `src/jobs/router.py` эндпоинты-заглушки
+- [x] Проверка в `/docs` (Swagger видит схемы и эндпоинты)
 
 ### Этап 3. Домен
 - [x] `src/jobs/domain/value_objects.py` — `JobStatus` (StrEnum)
@@ -123,11 +117,11 @@ tests/
   - [x] накопление событий
 
 ### Этап 4. Персистентность (ORM + репозиторий)
-- [ ] `src/jobs/models.py` — SQLAlchemy ORM
-- [ ] `src/jobs/repository.py`
-- [ ] `src/jobs/infrastructure/repository.py`
+- [~] `src/jobs/models.py` — SQLAlchemy ORM
+- [~] `src/jobs/repository.py`
+- [~] `src/jobs/infrastructure/repository.py`
 - [~] `src/jobs/mappers.py`
-- [ ] Alembic:
+- [~] Alembic:
   - [ ] `alembic init`
   - [ ] Настройка `env.py` под async engine
   - [ ] Первая миграция
@@ -219,7 +213,6 @@ tests/
 - [ ] `docs/checklist.md` — чек-лист ручного тестирования
 - [ ] OpenAPI/Swagger примеры (`response_model`, `responses`, `examples`)
 - [ ] `examples/` — примеры curl-запросов
-- [ ] Playwright-тесты UI, если появится фронт
 ---
 
 ## Прогресс
@@ -228,6 +221,6 @@ tests/
 TODO-лист — синхронизирован с задачами.
 
 - **Начало проекта:** сентябрь 2026
-- **Текущий этап:** написаны домены, перехожу к роутерам
+- **Текущий этап:** прописаны домены, перехожу к персистентности - ORM, jobs/models.py, миграции
 
 ---

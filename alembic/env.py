@@ -6,7 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from src.database import Base
-from src.config import Config as app_config
+from src.config import settings as app_config
 from src.main import app  # noqa: F401
 
 # this is the Alembic Config object, which provides
@@ -30,7 +30,12 @@ target_metadata = Base.metadata
 # ... etc.
 
 def do_run_migrations(connection):
-    context.configure(connection=connection, target_metadata=target_metadata)
+    context.configure(
+        connection=connection,
+        target_metadata=target_metadata,
+        compare_type=True,
+        compare_server_default=True
+    )
     with context.begin_transaction():
         context.run_migrations()
 
@@ -63,3 +68,8 @@ def run_migrations_offline():
     )
     with context.begin_transaction():
         context.run_migrations()
+
+if context.is_offline_mode():
+    run_migrations_offline()
+else:
+    run_migrations_online()

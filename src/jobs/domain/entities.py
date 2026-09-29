@@ -24,6 +24,7 @@ class ParseJob(DomainModel):
     items_count: int = 0
     per_page: int = 20
     max_pages: int = 5
+    error: str | None = None
     created_at: datetime | None = None
 
     def __post_init__(self) -> None:
@@ -35,15 +36,16 @@ class ParseJob(DomainModel):
             raise InvalidJobState
         self.status = JobStatus.RUNNING
 
-    def complete(self, items_count) -> None:
+    def complete(self, items_count: int) -> None:
         if self.status != JobStatus.RUNNING:
             raise InvalidJobState
         self.status = JobStatus.COMPLETED
         self.items_count = items_count
         self._events.append(JobCompleted(job_id=self.id, count=items_count))
 
-    def fail(self, reason) -> None:
+    def fail(self, reason: str) -> None:
         if self.status != JobStatus.RUNNING:
             raise InvalidJobState
         self.status = JobStatus.FAILED
+        self.error = reason
         self._events.append(JobFailed(job_id=self.id, reason=reason))

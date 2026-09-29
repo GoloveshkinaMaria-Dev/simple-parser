@@ -85,6 +85,8 @@ tests/
 └── jobs/                              # тесты модуля jobs
     ├── __init__.py
     ├── conftest.py                    # фикстура job (ParseJob в PENDING)
+    ├── test_mappers.py
+    ├── test_repository.py
     └── test_parse_job.py              # unit-тесты ParseJob: переходы, события, дефолты
 ```
 ---
@@ -97,7 +99,7 @@ tests/
 - [x] `.gitignore`, `.env.example`
 - [x] `src/config.py` — `BaseSettings` (DATABASE_URL, REDIS_URL, ENVIRONMENT)
 - [x] `src/main.py` — FastAPI app + `/health`
-- [~] `src/database.py` — async engine, `async_sessionmaker`, `get_session`
+- [x] `src/database.py` — async engine, `async_sessionmaker`, `get_session`
 - [x] Скрытие docs в проде
 - [ ] Глобальные exception хендлеры
 
@@ -117,26 +119,26 @@ tests/
   - [x] накопление событий
 
 ### Этап 4. Персистентность (ORM + репозиторий)
-- [~] `src/jobs/models.py` — SQLAlchemy ORM
-- [~] `src/jobs/repository.py`
-- [~] `src/jobs/infrastructure/repository.py`
-- [~] `src/jobs/mappers.py`
+- [x] `src/jobs/models.py` — SQLAlchemy ORM
+- [x] `src/jobs/repository.py`
+- [x] `src/jobs/infrastructure/repository.py`
+- [x] `src/jobs/mappers.py`
 - [~] Alembic:
-  - [ ] `alembic init`
-  - [ ] Настройка `env.py` под async engine
-  - [ ] Первая миграция
-  - [ ] Naming conventions для индексов/констрейнтов
-  - [ ] `file_template = %(year)d-%(month).2d-%(day).2d_%(slug)s`
-- [ ] Интеграционные тесты репозитория (SQLite `:memory:` или тестовая PostgreSQL)
+  - [x] `alembic init`
+  - [~] Настройка `env.py` под async engine
+  - [x] Первая миграция
+  - [~] Naming conventions для индексов/констрейнтов
+  - [~] `file_template = %(year)d-%(month).2d-%(day).2d_%(slug)s`
+- [~] Интеграционные тесты репозитория (SQLite `:memory:` или тестовая PostgreSQL)
 
 ### Этап 5. Парсер
 - [x] `src/parser/schemas.py`
 - [x] `src/parser/mappers.py`
-- [ ] `src/parser/client.py`
-- [ ] `src/parser/service.py`
-- [ ] `src/parser/exceptions.py`
+- [~] `src/parser/client.py`
+- [~] `src/parser/service.py`
+- [~] `src/parser/exceptions.py`
 - [ ] Retry и таймауты
-- [ ] Логирование через `logging`
+- [~] Логирование через `logging`
 - [x] Юнит-тесты парсера: `test_mappers.py`
 - [ ] Юнит-тесты парсера: `test_search_all.py` — пагинация
 - [ ] Негативные кейсы: пустой ответ, отсутствие `items`, битый JSON
@@ -221,6 +223,5 @@ tests/
 TODO-лист — синхронизирован с задачами.
 
 - **Начало проекта:** сентябрь 2026
-- **Текущий этап:** прописаны домены, перехожу к персистентности - ORM, jobs/models.py, миграции
-
+- **Текущий этап:** парсер-сервис
 ---

@@ -1,12 +1,12 @@
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 from fastapi import APIRouter
 
 from src.jobs.domain.value_objects import JobStatus
 from src.jobs.schemas import JobResponse, ParseRequest, ResumeResponse
 
-
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
+
 
 @router.post(
     "",

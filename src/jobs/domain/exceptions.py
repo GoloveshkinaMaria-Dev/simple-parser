@@ -1,5 +1,6 @@
 """Domain exceptions for parse jobs."""
 
+
 class DomainError(Exception):
     """Base domain error."""
 

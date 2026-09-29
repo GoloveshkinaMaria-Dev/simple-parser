@@ -7,6 +7,7 @@ from .domain.value_objects import JobStatus
 
 class ResumeResponse(BaseModel):
     """Resume data returned by the API."""
+
     id: str
     title: str
     area: str
@@ -18,6 +19,7 @@ class ResumeResponse(BaseModel):
 
 class JobResponse(BaseModel):
     """Status and results of a parse job."""
+
     status: JobStatus
     id: int
     text: str
@@ -27,6 +29,7 @@ class JobResponse(BaseModel):
 
 class ParseRequest(BaseModel):
     """Parameters for starting a parse job."""
+
     text: str
     area: int | None = None
     per_page: int = Field(20, ge=1, le=100)

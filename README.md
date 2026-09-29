@@ -86,6 +86,7 @@ tests/
     ├── __init__.py
     ├── conftest.py                    # фикстура job (ParseJob в PENDING)
     ├── test_mappers.py
+    ├── test_repository.py
     └── test_parse_job.py              # unit-тесты ParseJob: переходы, события, дефолты
 ```
 ---
@@ -120,7 +121,7 @@ tests/
 ### Этап 4. Персистентность (ORM + репозиторий)
 - [x] `src/jobs/models.py` — SQLAlchemy ORM
 - [x] `src/jobs/repository.py`
-- [~] `src/jobs/infrastructure/repository.py`
+- [x] `src/jobs/infrastructure/repository.py`
 - [x] `src/jobs/mappers.py`
 - [~] Alembic:
   - [x] `alembic init`
@@ -133,11 +134,11 @@ tests/
 ### Этап 5. Парсер
 - [x] `src/parser/schemas.py`
 - [x] `src/parser/mappers.py`
-- [ ] `src/parser/client.py`
-- [ ] `src/parser/service.py`
-- [ ] `src/parser/exceptions.py`
+- [~] `src/parser/client.py`
+- [~] `src/parser/service.py`
+- [~] `src/parser/exceptions.py`
 - [ ] Retry и таймауты
-- [ ] Логирование через `logging`
+- [~] Логирование через `logging`
 - [x] Юнит-тесты парсера: `test_mappers.py`
 - [ ] Юнит-тесты парсера: `test_search_all.py` — пагинация
 - [ ] Негативные кейсы: пустой ответ, отсутствие `items`, битый JSON
@@ -222,5 +223,5 @@ tests/
 TODO-лист — синхронизирован с задачами.
 
 - **Начало проекта:** сентябрь 2026
-- **Текущий этап:** завершаю этап персистентности
+- **Текущий этап:** парсер-сервис
 ---

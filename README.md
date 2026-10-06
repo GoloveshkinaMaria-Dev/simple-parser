@@ -135,12 +135,12 @@ tests/
 - [x] `src/parser/schemas.py`
 - [x] `src/parser/mappers.py`
 - [~] `src/parser/client.py`
-- [~] `src/parser/service.py`
-- [~] `src/parser/exceptions.py`
+- [x] `src/parser/service.py`
+- [x] `src/parser/exceptions.py`
 - [ ] Retry и таймауты
 - [~] Логирование через `logging`
 - [x] Юнит-тесты парсера: `test_mappers.py`
-- [ ] Юнит-тесты парсера: `test_search_all.py` — пагинация
+- [ ] Юнит-тесты парсера: `test_search_all.py`
 - [ ] Негативные кейсы: пустой ответ, отсутствие `items`, битый JSON
 - [ ] Тест клиента с моками:
   - [ ] 200 OK

@@ -134,19 +134,12 @@ tests/
 ### Этап 5. Парсер
 - [x] `src/parser/schemas.py`
 - [x] `src/parser/mappers.py`
-- [~] `src/parser/client.py`
-- [~] `src/parser/service.py`
-- [~] `src/parser/exceptions.py`
-- [ ] Retry и таймауты
-- [~] Логирование через `logging`
+- [x] `src/parser/service.py`
+- [x] `src/parser/exceptions.py`
 - [x] Юнит-тесты парсера: `test_mappers.py`
-- [ ] Юнит-тесты парсера: `test_search_all.py` — пагинация
-- [ ] Негативные кейсы: пустой ответ, отсутствие `items`, битый JSON
-- [ ] Тест клиента с моками:
-  - [ ] 200 OK
-  - [ ] 500 → retry
-  - [ ] timeout → retry
-  - [ ] 429 → backoff
+- [x] Юнит-тесты парсера: `test_search_all.py`
+- [x] Негативные кейсы: пустой ответ, отсутствие `items`, битый JSON
+
 
 ### Этап 6. Application Service (use cases)
 - [ ] `src/jobs/service.py` — `ParseJobService`:

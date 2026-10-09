@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class ParserConfig(BaseSettings):
     data_dir: Path = Path("data")
-    file_glob: str = "*.json"   
+    file_glob: str = "*.json"
     encoding: str = "utf-8-sig"
     fail_on_invalid: bool = True
 

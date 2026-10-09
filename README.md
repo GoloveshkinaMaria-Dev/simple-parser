@@ -86,6 +86,7 @@ tests/
     ├── __init__.py
     ├── conftest.py                    # фикстура job (ParseJob в PENDING)
     ├── test_mappers.py
+    ├── test_jobs_api.py
     ├── test_repository.py
     └── test_parse_job.py              # unit-тесты ParseJob: переходы, события, дефолты
 ```

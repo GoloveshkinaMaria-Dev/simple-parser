@@ -11,3 +11,7 @@ class JobNotFound(DomainError):
 
 class InvalidJobState(DomainError):
     """Operation not allowed in the current job state."""
+
+
+class JobNotCompleted(DomainError):
+    """///"""

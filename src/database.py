@@ -26,4 +26,9 @@ SessionLocal = async_sessionmaker(
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
     """Yield an async session and close it after the request."""
     async with SessionLocal() as session:
-        yield session
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise

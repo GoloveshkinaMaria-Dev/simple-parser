@@ -59,7 +59,10 @@ class TestReadAll:
         self, tmp_path, search_fixtures_dir
     ) -> None:
         from src.parser.exceptions import InvalidResponse, ParseError
-        print(f"DEBUG: InvalidResponse is subclass of ParseError: {issubclass(InvalidResponse, ParseError)}")
+
+        print(
+            f"DEBUG: InvalidResponse is subclass of ParseError: {issubclass(InvalidResponse, ParseError)}"
+        )
         print(f"DEBUG: InvalidResponse.__mro__: {InvalidResponse.__mro__}")
         print(f"DEBUG: ParseError.__module__: {ParseError.__module__}")
         (tmp_path / "valid.json").write_bytes(
@@ -72,6 +75,7 @@ class TestReadAll:
         # отладка
         from src.parser.exceptions import ParseError as PE
         from src.parser.service import ParseError as SPE
+
         print(f"DEBUG: PE is SPE = {PE is SPE}")
         print(f"DEBUG: fail_on_invalid = {service.fail_on_invalid}")
 
@@ -91,7 +95,9 @@ class TestSearchAll:
         service = ParserService(data_dir=tmp_path)
         assert service.search_all() == []
 
-    def test_search_all_from_fixture_fields(self, tmp_path, search_fixtures_dir) -> None:
+    def test_search_all_from_fixture_fields(
+        self, tmp_path, search_fixtures_dir
+    ) -> None:
         (tmp_path / "search.json").write_bytes(
             (search_fixtures_dir / "hh_resume_search.json").read_bytes()
         )

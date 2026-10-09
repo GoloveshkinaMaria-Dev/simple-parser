@@ -155,8 +155,6 @@ class TestTypes:
         result = hh_resume_to_domain(hh_resume_full)
         assert isinstance(result.work_format, list)
 
-    def test_salary_amount_is_int_or_none(
-        self, hh_resume_full: HHResume
-    ) -> None:
+    def test_salary_amount_is_int_or_none(self, hh_resume_full: HHResume) -> None:
         result = hh_resume_to_domain(hh_resume_full)
         assert result.salary_amount is None or isinstance(result.salary_amount, int)

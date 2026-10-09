@@ -9,3 +9,7 @@ plugins = ["pydantic.mypy"]
 [[tool.mypy.overrides]]
 module = "src.config"
 disable_error_code = ["call-arg"]
+
+[tool.ruff.lint]
+extend-ignore = ["B008"]
+

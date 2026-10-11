@@ -20,7 +20,7 @@
 1. Забирает вакансии с hh.ru по поисковому запросу.
 2. Парсит сырой JSON в domain-модели.
 3. Сохраняет результат в PostgreSQL.
-4. Умеет считать статистику: средняя зарплата, топ-навыков, распределение по компаниям.
+4. Умеет считать статистику: средняя зарплата по городам, медианная зарплата по городам, топ-навыков
 5. Показывает результаты в простом веб-UI.
 
 ---
@@ -75,20 +75,25 @@
 ```
 tests/
 ├── __init__.py
-├── parser/                            # тесты модуля parser
+├── parser/
 │   ├── __init__.py
-│   ├── conftest.py                    # фикстуры: HHResume, HHArea, HHSalary, HHWorkFormat
+│   ├── conftest.py
 │   ├── fixtures/
-│   │   ├── hh_resume_one.json         # одно резюме (проверка HHResume отдельно)
-│   │   └── hh_resume_search.json      # обёртка ответа: 3 резюме (полное, без salary, без area)
-│   └── test_mappers.py                # unit-тесты hh_resume_to_domain и hh_response_to_domain_list
-└── jobs/                              # тесты модуля jobs
+│   │   ├── hh_resume_one.json
+│   │   └── hh_resume_search.json
+│   └── test_mappers.py
+├── workers/
+│   ├── __init__.py
+│   ├── test_tasks.py           
+│   └── test_build_service.py     
+└── jobs/
     ├── __init__.py
-    ├── conftest.py                    # фикстура job (ParseJob в PENDING)
+    ├── conftest.py
     ├── test_mappers.py
     ├── test_jobs_api.py
     ├── test_repository.py
-    └── test_parse_job.py              # unit-тесты ParseJob: переходы, события, дефолты
+    └── test_parse_job.py           
+  
 ```
 ---
 ## TODO — публичный роадмап
@@ -102,7 +107,7 @@ tests/
 - [x] `src/main.py` — FastAPI app + `/health`
 - [x] `src/database.py` — async engine, `async_sessionmaker`, `get_session`
 - [x] Скрытие docs в проде
-- [ ] Глобальные exception хендлеры
+- [x] Глобальные exception хендлеры
 
 ### Этап 2. DTO + роутер
 - [x] `src/jobs/schemas.py`
@@ -126,11 +131,11 @@ tests/
 - [x] `src/jobs/mappers.py`
 - [~] Alembic:
   - [x] `alembic init`
-  - [~] Настройка `env.py` под async engine
+  - [x] Настройка `env.py` под async engine
   - [x] Первая миграция
   - [~] Naming conventions для индексов/констрейнтов
   - [~] `file_template = %(year)d-%(month).2d-%(day).2d_%(slug)s`
-- [~] Интеграционные тесты репозитория (SQLite `:memory:` или тестовая PostgreSQL)
+- [x] Интеграционные тесты репозитория (SQLite `:memory:` или тестовая PostgreSQL)
 
 ### Этап 5. Парсер
 - [x] `src/parser/schemas.py`
@@ -154,30 +159,74 @@ tests/
 - [x] Интеграционные тесты API
 
 ### Этап 7. Фоновые задачи (воркер)
-- [ ] Redis + `arq`
-- [ ] `src/workers/tasks.py` — `parse_job_task(job_id)`
-- [ ] `src/workers/settings.py` — конфиг воркера
-- [ ] `POST /jobs` теперь **ставит задачу в очередь**, а не парсит синхронно
-- [ ] Публикация доменных событий после `save` (event bus)
-- [ ] Логирование задач
+- [x] Redis + `arq`
+- [x] `src/workers/tasks.py` — `parse_job_task(job_id)`
+- [x] `src/workers/settings.py` — конфиг воркера
+- [x] `POST /jobs` теперь **ставит задачу в очередь**, а не парсит синхронно
+- [x] Публикация доменных событий после `save` (event bus)
+- [x] Логирование задач
 
-### Этап 8. Тесты (полный набор)
-- [ ] `tests/conftest.py`:
-  - [ ] async client (`httpx.ASGITransport`)
-  - [ ] тестовая БД (фикстура с транзакцией/откатом)
-  - [ ] фейковый репозиторий
-  - [ ] фейковый парсер
-- [x] `tests/fixtures/` — сохранённые ответы hh.ru (JSON)
-- [ ] Unit-тесты:
-  - [ ] домен (без FastAPI)
-  - [ ] парсер
-  - [ ] сервис (с фейками)
-- [ ] Integration-тесты:
-  - [ ] API (роуты, статусы, ошибки)
-  - [ ] репозиторий
-  - [ ] воркер (с фейковым парсером)
-- [ ] Негативные кейсы: 404, 409, 422, 500
-- [ ] Покрытие ≥ 85%
+### Этап 8. Аналитика: резюме в БД и агрегаты по зарплатам, навыкам
+
+#### 8.1. Модель и хранение
+
+- [~] `src/resumes/models.py` — `ResumeORM`:
+- [~] Alembic-миграция
+
+#### 8.2. Домен и мапперы
+
+- [~] `src/resumes/mappers.py` — `resume_to_orm` / `orm_to_resume`
+- [~] добавить skills в `Resume` и в маппер
+- [~] Юнит-тесты мапперов
+
+#### 8.3. Репозиторий
+
+- [ ] `src/resumes/repository.py` — Protocol:
+  - [ ] save_many
+  - [ ] list_by_job
+  - [ ] average_salary
+  - [ ] median_salar
+  - [ ] top_skills
+
+- [ ] `src/resumes/infrastructure/repository.py` + `SqlResumeRepository`
+
+#### 8.4. Интеграция с парсером и воркером
+
+- [ ] `ParserService.search_all()` возвращает реальные `list[Resume]`
+- [ ] `ParseJobService.__init__` принимает `resume_repo`
+
+#### 8.5. Эндпоинт `GET /jobs/{id}/resumes`
+
+- [ ] Заменить заглушку `return []` на `resume_repo.list_by_job(job_id)`
+- [ ] `ResumeResponse.from_domain_list` корректно маппит реальные данные
+- [ ] Тесты API: `200` + список, `409` для `pending`/`running`, `404` для несуществующего job
+
+#### 8.6. Аналитика — сервис и DTO
+
+- [ ] `src/analytics/domain/entities.py` — `SalaryStats`
+- [ ] `src/analytics/schemas.py` — `SalaryStatsResponse`
+- [ ] `src/analytics/service.py` — `AnalyticsService`
+- [ ] `src/analytics/dependencies.py` — сборка сервиса
+- [ ] `src/analytics/router.py` — эндпоинты:
+  - [ ] `GET /analytics/salary/average?area=1&keyword=python`
+  - [ ] `GET /analytics/salary/median?area=1&keyword=python`
+  - [ ] `GET /analytics/salary/stats?area=1&keyword=python`
+- [ ] Подключение роутера в `main.py`
+- [ ] Нормализация `area` (int-код hh)
+- [ ] Что делать с `salary_amount IS NULL -- подумать
+- [ ] Что делать с разными валютами (`WHERE salary_currency = 'RUR'` или конвертация) -- подумать
+
+#### 8.7. Тесты аналитики
+
+- [ ] Unit-тесты `AnalyticsService` с фейковым репозиторием
+- [ ] Интеграционные тесты репозитория
+- [ ] API-тесты эндпоинтов аналитики
+- [ ] Фикстура `resumes`
+
+#### 8.8. Документация
+
+- [ ] `docs/analytics.md` — какие метрики считаем, как интерпретировать
+- [ ] Примеры запросов
 
 ### Этап 9. Инфраструктура
 - [ ] GitHub Actions:
@@ -216,5 +265,5 @@ tests/
 TODO-лист — синхронизирован с задачами.
 
 - **Начало проекта:** сентябрь 2026
-- **Текущий этап:** фоновые задачи
+- **Текущий этап:** аналитика
 ---

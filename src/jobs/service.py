@@ -32,6 +32,13 @@ class ParseJobService:
 
     async def run(self, job_id: int) -> None:
         job = await self.get(job_id)
+        if job.status is not JobStatus.PENDING:
+            logger.info(
+                "job %s is in %s, skipping run",
+                job_id,
+                job.status,
+            )
+            return
         job.start()
         await self.repo.save(job)
         try:

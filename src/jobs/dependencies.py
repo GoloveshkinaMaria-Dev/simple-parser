@@ -1,12 +1,17 @@
 from typing import Any
 
-from fastapi import Depends
+from arq.connections import ArqRedis
+from fastapi import Depends, Request
 
 from src.database import AsyncSession, get_session
 from src.jobs.infrastructure.repository import SqlJobRepository
 from src.jobs.repository import JobRepository
 from src.jobs.service import ParseJobService
 from src.parser.service import ParserService
+
+
+async def get_arq_pool(request: Request) -> ArqRedis:
+    return request.app.state.arq
 
 
 async def get_job_repo(session: AsyncSession = Depends(get_session)) -> JobRepository:

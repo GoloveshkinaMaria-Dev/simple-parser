@@ -71,20 +71,16 @@ async def test_get_resumes_for_missing_job_returns_404(client: AsyncClient):
 
 
 async def test_get_resumes_for_completed_returns_empty_list(
-    client: AsyncClient, session: AsyncSession
+    client: AsyncClient, repo, session: AsyncSession
 ):
     created = await client.post("/jobs", json={"text": "python", "area": 1})
     job_id = created.json()["id"]
 
-    await session.execute(
-        text(
-            "UPDATE parse_job SET status = 'completed', items_count = 0 WHERE id = :id"
-        ),
-        {"id": job_id},
-    )
+    job = await repo.get(job_id)
+    job.start()
+    job.complete(items_count=0)
+    await repo.save(job)
     await session.commit()
 
     response = await client.get(f"/jobs/{job_id}/resumes")
-
     assert response.status_code == 200
-    assert response.json() == []

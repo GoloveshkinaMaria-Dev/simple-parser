@@ -6,6 +6,7 @@ from src.database import SessionLocal
 from src.jobs.infrastructure.bus import RedisEventBus
 from src.jobs.infrastructure.repository import SqlJobRepository
 from src.jobs.service import ParseJobService, ParserService
+from src.resumes.infrastructure.repository import SqlResumeRepository
 
 logger = logging.getLogger(__name__)
 
@@ -14,10 +15,16 @@ logger = logging.getLogger(__name__)
 async def build_service(ctx) -> AsyncIterator[ParseJobService]:
     async with SessionLocal() as session:
         repo = SqlJobRepository(session)
+        resume_repo = SqlResumeRepository(session)
         parser = ParserService()
         event_bus = RedisEventBus(ctx["redis"])
         try:
-            service = ParseJobService(repo, parser, event_bus)
+            service = ParseJobService(
+                repo=repo,
+                resume_repo=resume_repo,
+                parser=parser,
+                event_bus=event_bus,
+            )
             yield service
             await session.commit()
         except Exception:

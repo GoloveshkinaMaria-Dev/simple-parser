@@ -7,17 +7,24 @@ from src.jobs.repository import JobRepository
 from src.parser.domain.entities import Resume
 from src.parser.exceptions import ParseError
 from src.parser.service import ParserService
+from src.resumes.repository import ResumeRepository
 
 logger = logging.getLogger(__name__)  # TODO: do basicConfig in main in future
 
 
 class ParseJobService:
     def __init__(
-        self, repo: JobRepository, parser: ParserService, event_bus=None
+        self, repo: JobRepository,
+        resume_repo: ResumeRepository,
+        parser: ParserService,
+        event_bus=None
+        
     ) -> None:
         self.repo = repo
+        self.resume_repo = resume_repo
         self.parser = parser
         self.event_bus = event_bus
+        
 
     async def create(self, text: str, area: int | None = None) -> ParseJob:
         job = ParseJob(text=text, area=area)
@@ -27,7 +34,7 @@ class ParseJobService:
     async def get(self, job_id: int) -> ParseJob:
         job = await self.repo.get(job_id)
         if job is None:
-            raise JobNotFound(f"Job {job_id} not found")
+            raise JobNotFound(f"Job {job_id} not found")  # noqa: TRY003
         return job
 
     async def run(self, job_id: int) -> None:
@@ -43,6 +50,7 @@ class ParseJobService:
         await self.repo.save(job)
         try:
             resumes = self.parser.search_all()
+            await self.resume_repo.save_many(resumes, job_id=job_id)
             job.complete(items_count=len(resumes))
         except ParseError as e:
             logger.warning("Job %s failed during parsing: %s", job_id, e)
@@ -53,14 +61,14 @@ class ParseJobService:
         if self.event_bus is None:
             logger.warning(
                 "event_bus is not set, %d events for job %s will be dropped",
-                len(job._events),
+                len(events),
                 job_id,
             )
         else:
             for event in events:
                 try:
                     await self.event_bus.publish(event)
-                except Exception as e:  # noqa: BLE001
+                except Exception as e:
                     logger.warning(
                         "Failed to publish %s for job %s: %s",
                         type(event).__name__,
@@ -71,5 +79,5 @@ class ParseJobService:
     async def get_products(self, job_id: int) -> list[Resume]:
         job = await self.get(job_id)
         if job.status != JobStatus.COMPLETED:
-            raise JobNotCompleted(f"Job {job_id} is not completed yet")
-        return []  # resume table
+            raise JobNotCompleted(f"Job {job_id} is not completed yet")  # noqa: TRY003
+        return await self.resume_repo.list_by_job(job_id)

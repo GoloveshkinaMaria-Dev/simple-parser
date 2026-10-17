@@ -173,6 +173,7 @@ tests/
 - [x] `src/resumes/models.py` — `ResumeORM`:
 - [x] Alembic-миграция
 
+
 #### 8.2. Домен и мапперы
 
 - [~] `src/resumes/mappers.py` — `resume_to_orm` / `orm_to_resume`

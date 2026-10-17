@@ -14,6 +14,10 @@ async def get_arq_pool(request: Request) -> ArqRedis:
     return request.app.state.arq
 
 
+async def get_arq_pool(request: Request) -> ArqRedis:
+    return request.app.state.arq
+
+
 async def get_job_repo(session: AsyncSession = Depends(get_session)) -> JobRepository:
     return SqlJobRepository(session)
 

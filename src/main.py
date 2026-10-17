@@ -8,7 +8,12 @@ from fastapi import FastAPI
 from src.config import settings
 from src.exceptions import *
 from src.jobs.models import ParseJobORM  # noqa: F401
+from src.resumes.models import (             
+    ResumeORM,
+    ResumeSkillORM,
+)
 from src.jobs.routers import router as jobs_router
+from src.analytics.router import router as analytics_router
 
 
 @asynccontextmanager
@@ -33,6 +38,7 @@ app = FastAPI(
 )
 
 app.include_router(jobs_router)
+app.include_router(analytics_router)
 app.add_exception_handler(JobNotFound, job_not_found_handler)  # type: ignore[arg-type]
 app.add_exception_handler(JobNotCompleted, job_not_completed_handler)  # type: ignore[arg-type]
 app.add_exception_handler(InvalidJobState, invalid_job_state_handler)  # type: ignore[arg-type]

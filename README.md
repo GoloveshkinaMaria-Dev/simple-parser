@@ -170,8 +170,9 @@ tests/
 
 #### 8.1. Модель и хранение
 
-- [~] `src/resumes/models.py` — `ResumeORM`:
-- [~] Alembic-миграция
+- [x] `src/resumes/models.py` — `ResumeORM`:
+- [x] Alembic-миграция
+
 
 #### 8.2. Домен и мапперы
 
@@ -181,40 +182,40 @@ tests/
 
 #### 8.3. Репозиторий
 
-- [ ] `src/resumes/repository.py` — Protocol:
-  - [ ] save_many
-  - [ ] list_by_job
-  - [ ] average_salary
-  - [ ] median_salar
-  - [ ] top_skills
+- [x] `src/resumes/repository.py` — Protocol:
+  - [x] save_many
+  - [x] list_by_job
+  - [x] average_salary
+  - [x] median_salar
+  - [x] top_skills
 
-- [ ] `src/resumes/infrastructure/repository.py` + `SqlResumeRepository`
+- [x] `src/resumes/infrastructure/repository.py` + `SqlResumeRepository`
 
 #### 8.4. Интеграция с парсером и воркером
 
-- [ ] `ParserService.search_all()` возвращает реальные `list[Resume]`
-- [ ] `ParseJobService.__init__` принимает `resume_repo`
+- [x] `ParserService.search_all()` возвращает реальные `list[Resume]`
+- [x] `ParseJobService.__init__` принимает `resume_repo`
 
 #### 8.5. Эндпоинт `GET /jobs/{id}/resumes`
 
-- [ ] Заменить заглушку `return []` на `resume_repo.list_by_job(job_id)`
-- [ ] `ResumeResponse.from_domain_list` корректно маппит реальные данные
-- [ ] Тесты API: `200` + список, `409` для `pending`/`running`, `404` для несуществующего job
+- [x] Заменить заглушку `return []` на `resume_repo.list_by_job(job_id)`
+- [x] `ResumeResponse.from_domain_list` корректно маппит реальные данные
+- [x] Тесты API: `200` + список, `409` для `pending`/`running`, `404` для несуществующего job
 
 #### 8.6. Аналитика — сервис и DTO
 
-- [ ] `src/analytics/domain/entities.py` — `SalaryStats`
-- [ ] `src/analytics/schemas.py` — `SalaryStatsResponse`
-- [ ] `src/analytics/service.py` — `AnalyticsService`
-- [ ] `src/analytics/dependencies.py` — сборка сервиса
-- [ ] `src/analytics/router.py` — эндпоинты:
-  - [ ] `GET /analytics/salary/average?area=1&keyword=python`
-  - [ ] `GET /analytics/salary/median?area=1&keyword=python`
-  - [ ] `GET /analytics/salary/stats?area=1&keyword=python`
-- [ ] Подключение роутера в `main.py`
-- [ ] Нормализация `area` (int-код hh)
-- [ ] Что делать с `salary_amount IS NULL -- подумать
-- [ ] Что делать с разными валютами (`WHERE salary_currency = 'RUR'` или конвертация) -- подумать
+- [x] `src/analytics/domain/entities.py` — `SalaryStats`
+- [x] `src/analytics/schemas.py` — `SalaryStatsResponse`
+- [x] `src/analytics/service.py` — `AnalyticsService`
+- [x] `src/analytics/dependencies.py` — сборка сервиса
+- [x] `src/analytics/router.py` — эндпоинты:
+  - [x] `GET /analytics/salary/average?area=1&keyword=python`
+  - [x] `GET /analytics/salary/median?area=1&keyword=python`
+  - [x] `GET /analytics/salary/stats?area=1&keyword=python`
+- [x] Подключение роутера в `main.py`
+- [x] Нормализация `area` (int-код hh)
+- [x] Что делать с `salary_amount IS NULL -- подумать
+- [x] Что делать с разными валютами (`WHERE salary_currency = 'RUR'` или конвертация) -- подумать
 
 #### 8.7. Тесты аналитики
 
@@ -265,5 +266,5 @@ tests/
 TODO-лист — синхронизирован с задачами.
 
 - **Начало проекта:** сентябрь 2026
-- **Текущий этап:** аналитика
+- **Текущий этап:** веб-интерфейс
 ---

@@ -6,15 +6,17 @@ from .schemas import HHResume, HHResumeSearchResponse
 
 def hh_resume_to_domain(hh: HHResume) -> Resume:
     return Resume(
-        id=hh.id,
+        external_id=hh.id,
         title=hh.title,
         first_name=hh.first_name,
         last_name=hh.last_name,
-        area=hh.area.name if hh.area else "",
+        area_name=hh.area.name if hh.area else "",
+        area_id=int(hh.area.id) if hh.area else None,
         salary_amount=hh.salary.amount if hh.salary else None,
         salary_currency=hh.salary.currency if hh.salary else None,
         url=hh.alternate_url,
         work_format=[wf.name for wf in hh.work_format] if hh.work_format else [],
+        skills=[s.name for s in hh.key_skills] if hh.key_skills else [],
     )
 
 
@@ -24,7 +26,7 @@ def hh_response_to_domain_list(response: HHResumeSearchResponse) -> list[Resume]
 
 def resume_to_response(resume: Resume) -> ResumeResponse:
     return ResumeResponse(
-        id=resume.id,
+        id=resume.external_id,
         title=resume.title,
         area=resume.area,
         salary_amount=resume.salary_amount,

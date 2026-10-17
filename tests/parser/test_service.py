@@ -4,7 +4,7 @@ import json
 
 import pytest
 from src.parser.domain.entities import Resume
-from src.parser.exceptions import EmptyDataError, InvalidResponse
+from src.parser.exceptions import EmptyDataError, InvalidResponse, ParseError
 from src.parser.service import ParserService
 
 
@@ -58,13 +58,6 @@ class TestReadAll:
     def test_read_all_skips_invalid_when_flag_false(
         self, tmp_path, search_fixtures_dir
     ) -> None:
-        from src.parser.exceptions import InvalidResponse, ParseError
-
-        print(
-            f"DEBUG: InvalidResponse is subclass of ParseError: {issubclass(InvalidResponse, ParseError)}"
-        )
-        print(f"DEBUG: InvalidResponse.__mro__: {InvalidResponse.__mro__}")
-        print(f"DEBUG: ParseError.__module__: {ParseError.__module__}")
         (tmp_path / "valid.json").write_bytes(
             (search_fixtures_dir / "hh_resume_search.json").read_bytes()
         )
@@ -72,17 +65,13 @@ class TestReadAll:
 
         service = ParserService(data_dir=tmp_path, fail_on_invalid=False)
 
-        # отладка
-        from src.parser.exceptions import ParseError as PE
-        from src.parser.service import ParseError as SPE
-
-        print(f"DEBUG: PE is SPE = {PE is SPE}")
-        print(f"DEBUG: fail_on_invalid = {service.fail_on_invalid}")
-
         responses = service.read_all()
-        print(f"DEBUG: len(responses) = {len(responses)}")
 
         assert len(responses) == 1
+
+    def test_invalid_response_is_parse_error(self) -> None:
+        """Invariant: InvalidResponse is a subclass of ParseError."""
+        assert issubclass(InvalidResponse, ParseError)
 
 
 class TestSearchAll:
@@ -108,22 +97,25 @@ class TestSearchAll:
 
         # первое резюме, полное
         first = resumes[0]
-        assert first.id == "0123456789abcdef"
+        assert first.external_id == "0123456789abcdef"
         assert first.title == "Python-разработчик"
-        assert first.area == "Москва"
+        assert first.area_id == 1
+        assert first.area_name == "Москва"
         assert first.salary_amount == 200000
         assert first.salary_currency == "RUR"
         assert first.work_format == ["Удалённо", "Гибрид"]
 
         # второе, без salary
         second = resumes[1]
-        assert second.area == "Санкт-Петербург"
+        assert second.area_id == 2
+        assert second.area_name == "Санкт-Петербург"
         assert second.salary_amount is None
         assert second.salary_currency is None
 
         # третье, без area / work_format
         third = resumes[2]
-        assert third.area == ""
+        assert third.area_id is None
+        assert third.area_name == ""
         assert third.work_format == []
         assert third.first_name is None
         assert third.last_name is None

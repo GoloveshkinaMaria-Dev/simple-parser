@@ -11,28 +11,32 @@ from .domain.value_objects import JobStatus
 class ResumeResponse(BaseModel):
     """Resume data returned by the API."""
 
-    id: str
+    external_id: str
     title: str
-    area: str
+    area_name: str
+    area_id: int | None
     salary_amount: int | None
     salary_currency: str | None
     url: str
     work_format: list[str]
+    skills: list[str]
 
     @classmethod
-    def from_domain(cls, r: "Resume") -> "ResumeResponse":
+    def from_domain(cls, r: Resume) -> "ResumeResponse":
         return cls(
-            id=r.id,
+            external_id=r.external_id,
             title=r.title,
-            area=r.area,
+            area_name=r.area_name,
+            area_id=r.area_id,
             salary_amount=r.salary_amount,
             salary_currency=r.salary_currency,
             url=r.url,
             work_format=r.work_format,
+            skills=r.skills,
         )
 
     @classmethod
-    def from_domain_list(cls, rs: list["Resume"]) -> list["ResumeResponse"]:
+    def from_domain_list(cls, rs: list[Resume]) -> list["ResumeResponse"]:
         return [cls.from_domain(r) for r in rs]
 
 
@@ -42,6 +46,7 @@ class JobResponse(BaseModel):
     status: JobStatus
     id: int
     text: str
+    area: int | None
     items_count: int
     created_at: datetime
 

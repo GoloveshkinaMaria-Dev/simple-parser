@@ -5,12 +5,14 @@ from dataclasses import dataclass
 
 @dataclass
 class Resume:
-    id: str
+    external_id: str
     title: str
     first_name: str | None
     last_name: str | None
-    area: str
+    area_name: str
+    area_id: int | None
     salary_amount: int | None
     salary_currency: str | None
     url: str
     work_format: list[str]
+    skills: list[str]

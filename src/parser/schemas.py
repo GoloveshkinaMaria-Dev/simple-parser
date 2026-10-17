@@ -3,6 +3,10 @@
 from pydantic import BaseModel
 
 
+class HHSkill(BaseModel):
+    name: str
+
+
 class HHArea(BaseModel):
     """Вложенный объект региона."""
 
@@ -35,6 +39,7 @@ class HHResume(BaseModel):
     salary: HHSalary | None
     alternate_url: str
     work_format: list[HHWorkFormat] | None
+    key_skills: list[HHSkill] | None = None
 
 
 class HHResumeSearchResponse(BaseModel):

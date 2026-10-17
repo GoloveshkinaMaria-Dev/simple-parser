@@ -1,10 +1,14 @@
+import logging
+
+from arq.connections import ArqRedis
 from fastapi import APIRouter, Depends
 
-from src.jobs.dependencies import get_parse_job_service
+from src.jobs.dependencies import get_arq_pool, get_parse_job_service
 from src.jobs.schemas import JobResponse, ParseRequest, ResumeResponse
 from src.jobs.service import ParseJobService
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
+logger = logging.getLogger(__name__)
 
 
 @router.post(
@@ -14,9 +18,14 @@ router = APIRouter(prefix="/jobs", tags=["Jobs"])
     summary="Create a parse job",
 )
 async def create_job(
-    request: ParseRequest, service: ParseJobService = Depends(get_parse_job_service)
+    request: ParseRequest,
+    service: ParseJobService = Depends(get_parse_job_service),
+    arq: ArqRedis = Depends(get_arq_pool),
 ) -> JobResponse:
     job = await service.create(text=request.text, area=request.area)
+    logger.info("enqueueing parse_job_task for job %s", job.id)
+
+    await arq.enqueue_job("parse_job_task", job.id)
     return JobResponse.from_domain(job)
 
 

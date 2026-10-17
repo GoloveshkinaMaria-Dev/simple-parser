@@ -11,11 +11,12 @@ class TestHhResumeToDomain:
     def test_full(self, hh_resume_full: HHResume) -> None:
         result = hh_resume_to_domain(hh_resume_full)
 
-        assert result.id == "0123456789abcdef"
+        assert result.external_id == "0123456789abcdef"
         assert result.title == "Python-разработчик"
         assert result.first_name == "Иван"
         assert result.last_name == "Иванов"
-        assert result.area == "Москва"
+        assert result.area_id == 1
+        assert result.area_name == "Москва"
         assert result.salary_amount == 200000
         assert result.salary_currency == "RUR"
         assert result.url == "https://hh.ru/resume/0123456789abcdef"
@@ -24,7 +25,8 @@ class TestHhResumeToDomain:
     def test_no_area(self, hh_resume_full: HHResume) -> None:
         hh_resume_full.area = None
         result = hh_resume_to_domain(hh_resume_full)
-        assert result.area == ""
+        assert result.area_id is None
+        assert result.area_name == ""
 
     def test_no_salary(self, hh_resume_full: HHResume) -> None:
         hh_resume_full.salary = None
@@ -88,7 +90,7 @@ class TestHhResponseToDomainList:
         )
         result = hh_response_to_domain_list(response)
         assert len(result) == 1
-        assert result[0].id == "0123456789abcdef"
+        assert result[0].external_id == "0123456789abcdef"
 
     def test_multiple_items(self, hh_resume_full: HHResume) -> None:
         r2 = hh_resume_full.model_copy(update={"id": "second"})
@@ -102,7 +104,7 @@ class TestHhResponseToDomainList:
         )
         result = hh_response_to_domain_list(response)
         assert len(result) == 3
-        assert [r.id for r in result] == [
+        assert [r.external_id for r in result] == [
             "0123456789abcdef",
             "second",
             "third",
@@ -115,7 +117,7 @@ class TestHhResponseToDomainList:
             items=items, found=3, pages=1, per_page=20, page=0
         )
         result = hh_response_to_domain_list(response)
-        assert [r.id for r in result] == ids
+        assert [r.external_id for r in result] == ids
 
 
 class TestFromFixture:
@@ -131,25 +133,28 @@ class TestFromFixture:
 
         first, second, third = resumes
 
-        assert first.area == "Москва"
+        assert first.area_id == 1
+        assert first.area_name == "Москва"
         assert first.salary_amount == 200000
         assert first.salary_currency == "RUR"
         assert first.work_format == ["Удалённо", "Гибрид"]
 
-        assert second.area == "Санкт-Петербург"
+        assert second.area_id == 2
+        assert second.area_name == "Санкт-Петербург"
         assert second.salary_amount is None
         assert second.salary_currency is None
 
-        assert third.area == ""
+        assert third.area_id is None
+        assert third.area_name == ""
         assert third.work_format == []
         assert third.first_name is None
         assert third.last_name is None
 
 
 class TestTypes:
-    def test_id_is_str(self, hh_resume_full: HHResume) -> None:
+    def test_external_id_is_str(self, hh_resume_full: HHResume) -> None:
         result = hh_resume_to_domain(hh_resume_full)
-        assert isinstance(result.id, str)
+        assert isinstance(result.external_id, str)
 
     def test_work_format_is_list(self, hh_resume_full: HHResume) -> None:
         result = hh_resume_to_domain(hh_resume_full)

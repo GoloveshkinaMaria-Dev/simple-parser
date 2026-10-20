@@ -5,6 +5,7 @@ import shutil
 from pathlib import Path
 
 import pytest
+
 from src.parser.schemas import (
     HHArea,
     HHResume,

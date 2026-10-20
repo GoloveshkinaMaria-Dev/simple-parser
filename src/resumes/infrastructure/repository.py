@@ -70,7 +70,10 @@ class SqlResumeRepository:
 
         stmt = (
             stmt.group_by(ResumeSkillORM.skill)
-            .order_by(func.count(ResumeSkillORM.resume_id).desc())
+            .order_by(
+                func.count(ResumeSkillORM.resume_id).desc(),
+                ResumeSkillORM.skill.asc(),
+            )
             .limit(limit)
         )
 

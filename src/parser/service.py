@@ -23,14 +23,12 @@ class ParserService:
 
         self.data_dir = data_dir or parser_settings.data_dir
         self.fail_on_invalid = (
-            fail_on_invalid
-            if fail_on_invalid is not None
-            else parser_settings.fail_on_invalid
+            fail_on_invalid if fail_on_invalid is not None else parser_settings.fail_on_invalid
         )
 
     def read(self, path: Path) -> HHResumeSearchResponse:
         """Read and parse a single JSON file."""
-        with open(path, "r", encoding=parser_settings.encoding) as file:
+        with open(path, encoding=parser_settings.encoding) as file:
             content = file.read()
             if not content.strip():
                 raise EmptyDataError(f"Empty file: {path}")
@@ -50,9 +48,7 @@ class ParserService:
         for path in files:
             print(f"DEBUG: processing {path.name}")
             if self.fail_on_invalid:
-                results.append(
-                    self.read(path)
-                )  # one invalid file = InvalidResponse in read()
+                results.append(self.read(path))  # one invalid file = InvalidResponse in read()
             else:
                 try:
                     results.append(self.read(path))

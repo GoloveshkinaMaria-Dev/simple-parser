@@ -1,7 +1,5 @@
 from datetime import UTC, datetime
 
-import pytest
-
 from src.jobs.domain.entities import ParseJob
 from src.jobs.domain.value_objects import JobStatus
 from src.jobs.mappers import orm_to_parse_job, parse_job_to_orm

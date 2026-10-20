@@ -10,9 +10,7 @@ from .value_objects import JobStatus
 
 @dataclass
 class DomainModel:
-    _events: list[DomainEvent] = field(
-        default_factory=list, init=False, compare=False, repr=False
-    )
+    _events: list[DomainEvent] = field(default_factory=list, init=False, compare=False, repr=False)
 
 
 @dataclass

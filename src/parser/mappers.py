@@ -1,4 +1,3 @@
-from src.jobs.schemas import ResumeResponse
 from src.parser.domain.entities import Resume
 
 from .schemas import HHResume, HHResumeSearchResponse
@@ -22,15 +21,3 @@ def hh_resume_to_domain(hh: HHResume) -> Resume:
 
 def hh_response_to_domain_list(response: HHResumeSearchResponse) -> list[Resume]:
     return [hh_resume_to_domain(item) for item in response.items]
-
-
-def resume_to_response(resume: Resume) -> ResumeResponse:
-    return ResumeResponse(
-        id=resume.external_id,
-        title=resume.title,
-        area=resume.area,
-        salary_amount=resume.salary_amount,
-        salary_currency=resume.salary_currency,
-        url=resume.url,
-        work_format=resume.work_format,
-    )

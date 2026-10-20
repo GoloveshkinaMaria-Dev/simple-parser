@@ -40,9 +40,7 @@ def patch_session_local(fake_session):
         yield fake_session
 
 
-async def test_build_service_commits_on_success(
-    fake_ctx, patch_session_local, fake_session
-):
+async def test_build_service_commits_on_success(fake_ctx, patch_session_local, fake_session):
     async with tasks.build_service(fake_ctx) as service:
         assert service is not None
 
@@ -50,9 +48,7 @@ async def test_build_service_commits_on_success(
     fake_session.rollback.assert_not_awaited()
 
 
-async def test_build_service_rollbacks_on_exception(
-    fake_ctx, patch_session_local, fake_session
-):
+async def test_build_service_rollbacks_on_exception(fake_ctx, patch_session_local, fake_session):
     with pytest.raises(RuntimeError, match="boom"):
         async with tasks.build_service(fake_ctx):
             raise RuntimeError("boom")
@@ -61,11 +57,9 @@ async def test_build_service_rollbacks_on_exception(
     fake_session.commit.assert_not_awaited()
 
 
-async def test_build_service_creates_redis_event_bus(
-    fake_ctx, patch_session_local, fake_redis
-):
+async def test_build_service_creates_redis_event_bus(fake_ctx, patch_session_local, fake_redis):
     with patch.object(tasks, "RedisEventBus") as mock_bus_cls:
         async with tasks.build_service(fake_ctx) as service:
-            pass
+            assert service is not None
 
     mock_bus_cls.assert_called_once_with(fake_redis)

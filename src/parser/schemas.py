@@ -4,32 +4,34 @@ from pydantic import BaseModel
 
 
 class HHSkill(BaseModel):
+    """Single skill entry from an hh.ru resume."""
+
     name: str
 
 
 class HHArea(BaseModel):
-    """Вложенный объект региона."""
+    """Nested area (region) object."""
 
     id: str
     name: str
 
 
 class HHSalary(BaseModel):
-    "Вложенный объект зарплаты."
+    """Nested salary object."""
 
     amount: int | None
     currency: str | None
 
 
 class HHWorkFormat(BaseModel):
-    "Вложенный объект формата занятости."
+    """Nested work-format entry (remote, office, hybrid)."""
 
     id: str
     name: str
 
 
 class HHResume(BaseModel):
-    """Вложенная единица резюме."""
+    """Single resume item from the hh.ru search response."""
 
     id: str
     title: str
@@ -43,7 +45,7 @@ class HHResume(BaseModel):
 
 
 class HHResumeSearchResponse(BaseModel):
-    """Получает ответ с хх."""
+    """Pydantic wrapper for the hh.ru resume search response."""
 
     items: list[HHResume]
     found: int

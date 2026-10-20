@@ -11,20 +11,24 @@ from src.resumes.repository import ResumeRepository
 
 
 async def get_arq_pool(request: Request) -> ArqRedis:
+    """Return the arq connection pool from application state."""
     return request.app.state.arq
 
 
 async def get_job_repo(session: AsyncSession = Depends(get_session)) -> JobRepository:
+    """Build a SqlJobRepository for the current request."""
     return SqlJobRepository(session)
 
 
 async def get_parser_service() -> ParserService:
+    """Provide a ParserService instance."""
     return ParserService()
 
 
 async def get_resume_repo(
     session: AsyncSession = Depends(get_session),
 ) -> ResumeRepository:
+    """Build a SqlResumeRepository for the current request."""
     return SqlResumeRepository(session)
 
 
@@ -33,4 +37,5 @@ async def get_parse_job_service(
     resume_repo: ResumeRepository = Depends(get_resume_repo),
     parser: ParserService = Depends(get_parser_service),
 ) -> ParseJobService:
+    """Build a ParseJobService with all its dependencies."""
     return ParseJobService(repo, resume_repo, parser, event_bus=None)

@@ -8,4 +8,5 @@ from src.resumes.repository import ResumeRepository
 async def get_analytics_service(
     repo: ResumeRepository = Depends(get_resume_repo),
 ) -> AnalyticsService:
+    """Provide a configured AnalyticsService instance."""
     return AnalyticsService(repo)

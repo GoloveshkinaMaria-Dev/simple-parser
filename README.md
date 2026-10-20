@@ -236,11 +236,6 @@ tests/
   - [x] `coverage` + бейдж
   - [x] Сервисы в CI (PostgreSQL, Redis)
 - [x] Бейдж статуса CI в README
-- [ ] `pre-commit` хуки:
-  - [ ] `ruff`
-  - [ ] `ruff-format`
-  - [ ] `mypy`
-  - [ ] проверка на `.env` в коммите
 - [x] `Dockerfile`:
   - [x] multi-stage
   - [x] non-root user
@@ -249,6 +244,7 @@ tests/
   - [x] `worker` (arq/Celery)
   - [x] `postgres`
   - [x] `redis`
+<!-- - [ ] pre-commit хуки (не делаем) -->
 
 ### Этап 10. Документация
 - [x] README с описанием и TODO

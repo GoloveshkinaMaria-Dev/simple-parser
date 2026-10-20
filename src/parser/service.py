@@ -9,7 +9,7 @@ from src.parser.exceptions import EmptyDataError, InvalidResponse, ParseError
 from src.parser.mappers import hh_response_to_domain_list
 from src.parser.schemas import HHResumeSearchResponse
 
-logger = logging.getLogger(__name__)  # TODO: do basicConfig in main in future
+logger = logging.getLogger(__name__)
 
 
 class ParserService:
@@ -20,14 +20,13 @@ class ParserService:
         data_dir: Path | None = None,
         fail_on_invalid: bool | None = None,
     ) -> None:
-
         self.data_dir = data_dir or parser_settings.data_dir
         self.fail_on_invalid = (
             fail_on_invalid if fail_on_invalid is not None else parser_settings.fail_on_invalid
         )
 
     def read(self, path: Path) -> HHResumeSearchResponse:
-        """Read and parse a single JSON file."""
+        """Read and validate a single JSON file into a search response."""
         with open(path, encoding=parser_settings.encoding) as file:
             content = file.read()
             if not content.strip():
@@ -43,23 +42,20 @@ class ParserService:
     def read_all(self) -> list[HHResumeSearchResponse]:
         """Read all JSON files from the configured data directory."""
         files = sorted(self.data_dir.glob(parser_settings.file_glob))
-        print(f"DEBUG: files = {[f.name for f in files]}")
         results = []
         for path in files:
-            print(f"DEBUG: processing {path.name}")
             if self.fail_on_invalid:
-                results.append(self.read(path))  # one invalid file = InvalidResponse in read()
+                results.append(self.read(path))
             else:
                 try:
                     results.append(self.read(path))
-                    print(f"DEBUG: appended {path.name}")
                 except ParseError as e:
-                    print(f"DEBUG: caught {type(e).__name__}")
                     logger.warning("Skipping %s: %s", path, e)
         logger.info("Read %d responses from %s", len(results), self.data_dir)
         return results
 
     def search_all(self) -> list[Resume]:
+        """Parse all JSON files and return a flat list of domain resumes."""
         files = self.read_all()
         results = []
         for response in files:

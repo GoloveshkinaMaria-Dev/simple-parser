@@ -19,10 +19,12 @@ from src.jobs.domain.exceptions import (
 )
 from src.jobs.models import ParseJobORM  # noqa: F401
 from src.jobs.routers import router as jobs_router
+from src.logging_config import configure_logging
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    configure_logging()
     app.state.arq = await create_pool(RedisSettings.from_dsn(str(settings.REDIS_URL)))
     yield
     await app.state.arq.close()

@@ -1,6 +1,6 @@
 # simple-parser
 
-[![CI](https://github.com/GoloveshkinaMaria-Dev/simple-parser/actions/workflows/ci.yml/badge.svg)](https://github.com/GoloveshkinaMaria-Dev/simple-parser/actions/workflows/ci.yml)
+[![CI](https://github.com/GoloveshkinaMaria-Dev/simple-parser/actions/workflows/ci.yml/badge.svg)](https://github.com/GoloveshkinaMaria-Dev/simple-parser/blob/feat/infra/.github/workflows/ci.yml)
 [![Coverage](https://img.shields.io/badge/coverage-soon-lightgrey)]()
 [![Python](https://img.shields.io/badge/python-3.12-blue)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)

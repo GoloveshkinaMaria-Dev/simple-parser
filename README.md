@@ -241,14 +241,14 @@ tests/
   - [ ] `ruff-format`
   - [ ] `mypy`
   - [ ] проверка на `.env` в коммите
-- [ ] `Dockerfile`:
-  - [ ] multi-stage
-  - [ ] non-root user
-- [ ] `docker-compose.yml`:
-  - [ ] `api` (FastAPI + uvicorn)
-  - [ ] `worker` (arq/Celery)
-  - [ ] `postgres`
-  - [ ] `redis`
+- [x] `Dockerfile`:
+  - [x] multi-stage
+  - [x] non-root user
+- [x] `docker-compose.yml`:
+  - [x] `api` (FastAPI + uvicorn)
+  - [x] `worker` (arq/Celery)
+  - [x] `postgres`
+  - [x] `redis`
 
 ### Этап 10. Документация
 - [x] README с описанием и TODO
@@ -265,5 +265,5 @@ tests/
 TODO-лист — синхронизирован с задачами.
 
 - **Начало проекта:** сентябрь 2026
-- **Текущий этап:** веб-интерфейс
+- **Текущий этап:** инфра+док
 ---

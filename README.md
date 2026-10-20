@@ -1,23 +1,21 @@
 # simple-parser
 
-[![CI](https://github.com/USERNAME/hh_parser/actions/workflows/ci.yml/badge.svg)](https://github.com/USERNAME/hh_parser/actions/workflows/ci.yml)
+[![CI](https://github.com/GoloveshkinaMaria-Dev/simple-parser/actions/workflows/ci.yml/badge.svg)](https://github.com/GoloveshkinaMaria-Dev/simple-parser/blob/feat/infra/.github/workflows/ci.yml)
 [![Coverage](https://img.shields.io/badge/coverage-soon-lightgrey)]()
 [![Python](https://img.shields.io/badge/python-3.12-blue)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 Парсер вакансий с [hh.ru](https://hh.ru).
 Пет-проект, в котором я совмещаю **разработку** и **тестирование**:
-чистая архитектура на стороне кода + pytest, моки, фикстуры, CI и Playwright
-на стороне QA.
+чистая архитектура на стороне кода + pytest, моки, фикстуры, CI
 
-> **Статус:** проект в активной разработке. Ниже — публичный TODO-лист,
-> который обновляется по мере продвижения.
+> **Статус:** проект окончен
 
 ---
 
 ## Что делает проект
 
-1. Забирает вакансии с hh.ru по поисковому запросу.
+1. Забирает вакансии с hh.ru по поисковому запросу (с json-мока).
 2. Парсит сырой JSON в domain-модели.
 3. Сохраняет результат в PostgreSQL.
 4. Умеет считать статистику: средняя зарплата по городам, медианная зарплата по городам, топ-навыков
@@ -230,34 +228,26 @@ tests/
 - [ ] Примеры запросов
 
 ### Этап 9. Инфраструктура
-- [ ] GitHub Actions:
-  - [ ] `pytest` на push/PR
-  - [ ] `ruff check` + `ruff format --check`
-  - [ ] `mypy`
-  - [ ] `coverage` + бейдж
-  - [ ] Сервисы в CI (PostgreSQL, Redis)
-- [ ] Бейдж статуса CI в README
-- [ ] `pre-commit` хуки:
-  - [ ] `ruff`
-  - [ ] `ruff-format`
-  - [ ] `mypy`
-  - [ ] проверка на `.env` в коммите
-- [ ] `Dockerfile`:
-  - [ ] multi-stage
-  - [ ] non-root user
-- [ ] `docker-compose.yml`:
-  - [ ] `api` (FastAPI + uvicorn)
-  - [ ] `worker` (arq/Celery)
-  - [ ] `postgres`
-  - [ ] `redis`
-
+- [x] GitHub Actions:
+  - [x] `pytest` на push/PR
+  - [x] `ruff check` + `ruff format --check`
+  - [x] `mypy`
+  - [x] `coverage` + бейдж
+  - [x] Сервисы в CI (PostgreSQL, Redis)
+- [x] Бейдж статуса CI в README
+- [x] `Dockerfile`:
+  - [x] multi-stage
+  - [x] non-root user
+- [x] `docker-compose.yml`:
+  - [x] `api` (FastAPI + uvicorn)
+  - [x] `worker` (arq/Celery)
+  - [x] `postgres`
+  - [x] `redis`
+<!-- - [ ] pre-commit хуки (не делаем) -->
 ### Этап 10. Документация
 - [x] README с описанием и TODO
-- [ ] `docs/architecture.md` — схема слоёв (DDD + FastAPI best practices)
-- [ ] `docs/test_cases.md` — таблица тест-кейсов
-- [ ] `docs/checklist.md` — чек-лист ручного тестирования
-- [ ] OpenAPI/Swagger примеры (`response_model`, `responses`, `examples`)
-- [ ] `examples/` — примеры curl-запросов
+- [x] `docs/architecture.md` — схема слоёв
+- [x] `docs/examples.md` — примеры curl-запросов
 ---
 
 ## Прогресс
@@ -266,5 +256,5 @@ tests/
 TODO-лист — синхронизирован с задачами.
 
 - **Начало проекта:** сентябрь 2026
-- **Текущий этап:** веб-интерфейс
+- **Текущий этап:** ПРОЕКТ ОКОНЧЕН 20 октября
 ---

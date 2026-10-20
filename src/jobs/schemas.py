@@ -23,6 +23,7 @@ class ResumeResponse(BaseModel):
 
     @classmethod
     def from_domain(cls, r: Resume) -> "ResumeResponse":
+        """Build a response DTO from a domain Resume."""
         return cls(
             external_id=r.external_id,
             title=r.title,
@@ -37,6 +38,7 @@ class ResumeResponse(BaseModel):
 
     @classmethod
     def from_domain_list(cls, rs: list[Resume]) -> list["ResumeResponse"]:
+        """Build a list of response DTOs from a list of domain resumes."""
         return [cls.from_domain(r) for r in rs]
 
 
@@ -52,6 +54,7 @@ class JobResponse(BaseModel):
 
     @classmethod
     def from_domain(cls, job: ParseJob) -> "JobResponse":
+        """Build a response DTO from a domain ParseJob."""
         return cls(
             id=job.id,
             text=job.text,
@@ -63,6 +66,7 @@ class JobResponse(BaseModel):
 
     @classmethod
     def from_domain_list(cls, jobs: list[ParseJob]) -> list["JobResponse"]:
+        """Build a list of response DTOs from a list of domain jobs."""
         return [cls.from_domain(j) for j in jobs]
 
 

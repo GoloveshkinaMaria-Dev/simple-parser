@@ -3,6 +3,7 @@ from src.resumes.models import ResumeORM  # , ResumeSkillORM
 
 
 def resume_to_orm(resume: Resume, job_id: int) -> ResumeORM:
+    """Convert a domain Resume to a ResumeORM row (skills are handled separately)."""
     return ResumeORM(
         job_id=job_id,
         external_id=resume.external_id,
@@ -17,6 +18,7 @@ def resume_to_orm(resume: Resume, job_id: int) -> ResumeORM:
 
 
 def orm_to_resume(orm: ResumeORM) -> Resume:
+    """Convert a ResumeORM row (with loaded skills) back to a domain Resume."""
     return Resume(
         external_id=orm.external_id,
         title=orm.title,

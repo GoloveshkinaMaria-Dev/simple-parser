@@ -3,6 +3,7 @@
 import json
 
 import pytest
+
 from src.parser.domain.entities import Resume
 from src.parser.exceptions import EmptyDataError, InvalidResponse, ParseError
 from src.parser.service import ParserService
@@ -55,9 +56,7 @@ class TestReadAll:
         service = ParserService(data_dir=tmp_path)
         assert service.read_all() == []
 
-    def test_read_all_skips_invalid_when_flag_false(
-        self, tmp_path, search_fixtures_dir
-    ) -> None:
+    def test_read_all_skips_invalid_when_flag_false(self, tmp_path, search_fixtures_dir) -> None:
         (tmp_path / "valid.json").write_bytes(
             (search_fixtures_dir / "hh_resume_search.json").read_bytes()
         )
@@ -84,9 +83,7 @@ class TestSearchAll:
         service = ParserService(data_dir=tmp_path)
         assert service.search_all() == []
 
-    def test_search_all_from_fixture_fields(
-        self, tmp_path, search_fixtures_dir
-    ) -> None:
+    def test_search_all_from_fixture_fields(self, tmp_path, search_fixtures_dir) -> None:
         (tmp_path / "search.json").write_bytes(
             (search_fixtures_dir / "hh_resume_search.json").read_bytes()
         )

@@ -1,18 +1,18 @@
 class ParseError(Exception):
-    pass
+    """Base exception for all parser errors."""
 
 
-class Unavailable(Exception):
-    pass
+class Unavailable(ParseError):
+    """Raised when the parser source is unavailable (network, 5xx)."""
 
 
-class RateLimited(Exception):
-    pass
+class RateLimited(ParseError):
+    """Raised when the parser source rate-limits requests (429)."""
 
 
 class InvalidResponse(ParseError):
-    pass
+    """Raised when the response cannot be parsed or fails schema validation."""
 
 
 class EmptyDataError(ParseError):
-    pass
+    """Raised when the response body or file is empty."""

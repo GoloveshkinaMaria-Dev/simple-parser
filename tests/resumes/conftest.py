@@ -11,7 +11,6 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.pool import NullPool
 
 from src.config import settings
-from src.parser.domain.entities import Resume
 from src.resumes.infrastructure.repository import SqlResumeRepository
 
 
@@ -43,6 +42,7 @@ async def session(engine) -> AsyncIterator[AsyncSession]:
 @pytest_asyncio.fixture
 async def repo(session: AsyncSession) -> SqlResumeRepository:
     return SqlResumeRepository(session)
+
 
 @pytest_asyncio.fixture
 async def job_id(session: AsyncSession) -> int:

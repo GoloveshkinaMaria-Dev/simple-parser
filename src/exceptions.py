@@ -8,13 +8,9 @@ async def job_not_found_handler(request: Request, exc: JobNotFound) -> JSONRespo
     return JSONResponse(status_code=404, content={"detail": str(exc)})
 
 
-async def job_not_completed_handler(
-    request: Request, exc: JobNotCompleted
-) -> JSONResponse:
+async def job_not_completed_handler(request: Request, exc: JobNotCompleted) -> JSONResponse:
     return JSONResponse(status_code=409, content={"detail": str(exc)})
 
 
-async def invalid_job_state_handler(
-    request: Request, exc: InvalidJobState
-) -> JSONResponse:
+async def invalid_job_state_handler(request: Request, exc: InvalidJobState) -> JSONResponse:
     return JSONResponse(status_code=409, content={"detail": str(exc)})

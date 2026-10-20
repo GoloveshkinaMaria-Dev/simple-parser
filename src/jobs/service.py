@@ -9,35 +9,43 @@ from src.parser.exceptions import ParseError
 from src.parser.service import ParserService
 from src.resumes.repository import ResumeRepository
 
-logger = logging.getLogger(__name__)  # TODO: do basicConfig in main in future
+logger = logging.getLogger(__name__)
 
 
 class ParseJobService:
+    """Application service for parse job use cases: create, run, retrieve."""
+
     def __init__(
-        self, repo: JobRepository,
+        self,
+        repo: JobRepository,
         resume_repo: ResumeRepository,
         parser: ParserService,
-        event_bus=None
-        
+        event_bus=None,
     ) -> None:
         self.repo = repo
         self.resume_repo = resume_repo
         self.parser = parser
         self.event_bus = event_bus
-        
 
     async def create(self, text: str, area: int | None = None) -> ParseJob:
+        """Create a new parse job in PENDING state and persist it."""
         job = ParseJob(text=text, area=area)
         await self.repo.save(job)
         return job
 
     async def get(self, job_id: int) -> ParseJob:
+        """Return the job by id, or raise JobNotFound if it does not exist."""
         job = await self.repo.get(job_id)
         if job is None:
-            raise JobNotFound(f"Job {job_id} not found")  # noqa: TRY003
+            raise JobNotFound(f"Job {job_id} not found")
         return job
 
     async def run(self, job_id: int) -> None:
+        """Execute the parsing flow: start → parse → save → complete/fail.
+
+        Idempotent: skips if the job is not in PENDING state.
+        Publishes accumulated domain events after saving the final state.
+        """
         job = await self.get(job_id)
         if job.status is not JobStatus.PENDING:
             logger.info(
@@ -77,7 +85,8 @@ class ParseJobService:
                     )
 
     async def get_products(self, job_id: int) -> list[Resume]:
+        """Return parsed resumes for a completed job; raise JobNotCompleted otherwise."""
         job = await self.get(job_id)
         if job.status != JobStatus.COMPLETED:
-            raise JobNotCompleted(f"Job {job_id} is not completed yet")  # noqa: TRY003
+            raise JobNotCompleted(f"Job {job_id} is not completed yet")
         return await self.resume_repo.list_by_job(job_id)

@@ -2,6 +2,8 @@ from pydantic import BaseModel
 
 
 class AverageSalaryResponse(BaseModel):
+    """Average salary aggregation result for a given area and keyword."""
+
     area_id: int
     keyword: str
     average: float | None
@@ -9,6 +11,8 @@ class AverageSalaryResponse(BaseModel):
 
 
 class MedianSalaryResponse(BaseModel):
+    """Median salary aggregation result for a given area and keyword."""
+
     area_id: int
     keyword: str
     median: float | None
@@ -16,5 +20,7 @@ class MedianSalaryResponse(BaseModel):
 
 
 class SkillCountResponse(BaseModel):
+    """Single skill with its occurrence count across resumes."""
+
     skill: str
     count: int

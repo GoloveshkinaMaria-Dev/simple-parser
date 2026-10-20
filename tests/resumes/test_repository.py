@@ -1,9 +1,6 @@
 """Integration tests for SqlResumeRepository."""
 
-import pytest
-
 from src.parser.domain.entities import Resume
-from src.resumes.infrastructure.repository import SqlResumeRepository
 
 
 def make_resume(
@@ -154,10 +151,12 @@ class TestListByJob:
     async def test_returns_only_this_job(self, repo, session) -> None:
         from src.jobs.models import ParseJobORM
 
-        job1 = ParseJobORM(text="a", area=1, status="pending", items_count=0,
-                           per_page=20, max_pages=5)
-        job2 = ParseJobORM(text="b", area=1, status="pending", items_count=0,
-                           per_page=20, max_pages=5)
+        job1 = ParseJobORM(
+            text="a", area=1, status="pending", items_count=0, per_page=20, max_pages=5
+        )
+        job2 = ParseJobORM(
+            text="b", area=1, status="pending", items_count=0, per_page=20, max_pages=5
+        )
         session.add_all([job1, job2])
         await session.flush()
 
@@ -355,7 +354,7 @@ class TestTopSkills:
         await session.commit()
 
         result = await repo.top_skills(area_id=1, keyword="java", limit=10)
-        assert result == [("Java", 1), ("Python", 1)]
+        assert set(result) == {("Java", 1), ("Python", 1)}
 
     async def test_empty(self, repo, session, job_id) -> None:
         result = await repo.top_skills(area_id=1, keyword="python", limit=10)

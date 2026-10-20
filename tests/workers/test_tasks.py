@@ -33,9 +33,7 @@ def patch_build_service(fake_service: AsyncMock):
         yield fake_service
 
 
-async def test_task_calls_service_run_with_job_id(
-    fake_ctx, patch_build_service
-):
+async def test_task_calls_service_run_with_job_id(fake_ctx, patch_build_service):
     await tasks.parse_job_task(fake_ctx, job_id=42)
 
     patch_build_service.run.assert_awaited_once_with(42)
@@ -47,9 +45,7 @@ async def test_task_returns_none_on_success(fake_ctx, patch_build_service):
     assert result is None
 
 
-async def test_task_propagates_unexpected_exception(
-    fake_ctx, patch_build_service, caplog
-):
+async def test_task_propagates_unexpected_exception(fake_ctx, patch_build_service, caplog):
     patch_build_service.run.side_effect = RuntimeError("db is down")
 
     with pytest.raises(RuntimeError, match="db is down"):
@@ -66,9 +62,7 @@ async def test_task_logs_exception(fake_ctx, patch_build_service, caplog):
     assert any("42" in r.message for r in caplog.records)
 
 
-async def test_task_logs_start_and_finish(
-    fake_ctx, patch_build_service, caplog
-):
+async def test_task_logs_start_and_finish(fake_ctx, patch_build_service, caplog):
     with caplog.at_level("INFO"):
         await tasks.parse_job_task(fake_ctx, job_id=42)
 

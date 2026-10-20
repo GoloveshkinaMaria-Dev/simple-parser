@@ -14,4 +14,4 @@ class InvalidJobState(DomainError):
 
 
 class JobNotCompleted(DomainError):
-    """///"""
+    """Parse job has not yet completed."""

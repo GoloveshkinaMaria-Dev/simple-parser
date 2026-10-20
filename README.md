@@ -244,6 +244,7 @@ tests/
   - [x] `postgres`
   - [x] `redis`
 <!-- - [ ] pre-commit хуки (не делаем) -->
+
 ### Этап 10. Документация
 - [x] README с описанием и TODO
 - [x] `docs/architecture.md` — схема слоёв

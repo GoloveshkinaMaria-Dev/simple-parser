@@ -22,6 +22,15 @@ from src.jobs.infrastructure.repository import SqlJobRepository
 from src.main import app
 
 
+@pytest_asyncio.fixture(autouse=True)
+async def clean_db(engine):
+    async with engine.begin() as conn:
+        await conn.execute(
+            text("TRUNCATE TABLE resume_skill, resume, parse_job RESTART IDENTITY CASCADE")
+        )
+    yield
+
+
 @pytest.fixture
 def job() -> ParseJob:
     j = ParseJob(text="python", area=1)
@@ -46,9 +55,6 @@ async def session(engine) -> AsyncIterator[AsyncSession]:
         yield s
         await s.rollback()
 
-    async with engine.begin() as conn:
-        await conn.execute(text("TRUNCATE TABLE parse_job RESTART IDENTITY CASCADE"))
-
 
 @pytest_asyncio.fixture
 async def repo(session: AsyncSession) -> SqlJobRepository:
@@ -56,7 +62,7 @@ async def repo(session: AsyncSession) -> SqlJobRepository:
 
 
 @pytest_asyncio.fixture
-async def fake_arq() -> AsyncMock:   
+async def fake_arq() -> AsyncMock:
     pool = AsyncMock()
     pool.enqueue_job = AsyncMock(return_value=None)
     return pool
@@ -65,7 +71,7 @@ async def fake_arq() -> AsyncMock:
 @pytest_asyncio.fixture
 async def client(
     session: AsyncSession,
-    fake_arq: AsyncMock,      
+    fake_arq: AsyncMock,
 ) -> AsyncIterator[AsyncClient]:
 
     async def override_get_session():
@@ -73,7 +79,7 @@ async def client(
         await session.commit()
 
     app.dependency_overrides[get_session] = override_get_session
-    app.dependency_overrides[get_arq_pool] = lambda: fake_arq 
+    app.dependency_overrides[get_arq_pool] = lambda: fake_arq
 
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:

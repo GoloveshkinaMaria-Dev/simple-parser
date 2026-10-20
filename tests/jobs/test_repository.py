@@ -1,7 +1,3 @@
-import pytest
-from sqlalchemy import delete
-
-from src.database import SessionLocal
 from src.jobs.domain.entities import ParseJob
 from src.jobs.domain.value_objects import JobStatus
 

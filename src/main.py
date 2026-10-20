@@ -5,19 +5,26 @@ from arq import create_pool
 from arq.connections import RedisSettings
 from fastapi import FastAPI
 
-from src.config import settings
-from src.exceptions import *
-from src.jobs.models import ParseJobORM  # noqa: F401
-from src.resumes.models import (             
-    ResumeORM,
-    ResumeSkillORM,
-)
-from src.jobs.routers import router as jobs_router
 from src.analytics.router import router as analytics_router
+from src.config import settings
+from src.exceptions import (
+    invalid_job_state_handler,
+    job_not_completed_handler,
+    job_not_found_handler,
+)
+from src.jobs.domain.exceptions import (
+    InvalidJobState,
+    JobNotCompleted,
+    JobNotFound,
+)
+from src.jobs.models import ParseJobORM  # noqa: F401
+from src.jobs.routers import router as jobs_router
+from src.logging_config import configure_logging
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    configure_logging()
     app.state.arq = await create_pool(RedisSettings.from_dsn(str(settings.REDIS_URL)))
     yield
     await app.state.arq.close()
@@ -32,9 +39,7 @@ logging.basicConfig(
 app = FastAPI(
     lifespan=lifespan,
     title="Parser Service",
-    openapi_url=(
-        None if settings.ENVIRONMENT not in ("local", "staging") else "/openapi.json"
-    ),
+    openapi_url=(None if settings.ENVIRONMENT not in ("local", "staging") else "/openapi.json"),
 )
 
 app.include_router(jobs_router)

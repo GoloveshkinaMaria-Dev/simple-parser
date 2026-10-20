@@ -78,9 +78,7 @@ class TestHhResumeToDomain:
 
 class TestHhResponseToDomainList:
     def test_empty(self) -> None:
-        response = HHResumeSearchResponse(
-            items=[], found=0, pages=0, per_page=20, page=0
-        )
+        response = HHResumeSearchResponse(items=[], found=0, pages=0, per_page=20, page=0)
         result = hh_response_to_domain_list(response)
         assert result == []
 
@@ -113,9 +111,7 @@ class TestHhResponseToDomainList:
     def test_preserves_order(self, hh_resume_full: HHResume) -> None:
         ids = ["1", "2", "3"]
         items = [hh_resume_full.model_copy(update={"id": i}) for i in ids]
-        response = HHResumeSearchResponse(
-            items=items, found=3, pages=1, per_page=20, page=0
-        )
+        response = HHResumeSearchResponse(items=items, found=3, pages=1, per_page=20, page=0)
         result = hh_response_to_domain_list(response)
         assert [r.external_id for r in result] == ids
 

@@ -1,12 +1,12 @@
-from logging.config import fileConfig
 import asyncio
-from sqlalchemy.ext.asyncio import create_async_engine
+from logging.config import fileConfig
+
 from sqlalchemy import pool
+from sqlalchemy.ext.asyncio import create_async_engine
 
 from alembic import context
-
-from src.database import Base
 from src.config import settings as app_config
+from src.database import Base
 from src.main import app  # noqa: F401
 
 # this is the Alembic Config object, which provides

@@ -7,10 +7,13 @@ from src.resumes.models import ResumeORM, ResumeSkillORM
 
 
 class SqlResumeRepository:
+    """SQLAlchemy implementation of ResumeRepository backed by PostgreSQL."""
+
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
     async def save_many(self, resumes: list[Resume], job_id: int) -> None:
+        """Persist resumes and their skills; deduplicate skills within each resume."""
         for resume in resumes:
             orm = resume_to_orm(resume, job_id=job_id)
             self.session.add(orm)
@@ -19,12 +22,14 @@ class SqlResumeRepository:
                 self.session.add(ResumeSkillORM(resume_id=orm.id, skill=skill))
 
     async def list_by_job(self, job_id: int) -> list[Resume]:
+        """Return all resumes associated with the given job, with skills loaded."""
         stmt = select(ResumeORM).where(ResumeORM.job_id == job_id)
         result = await self.session.execute(stmt)
         orms = result.scalars().all()
         return [orm_to_resume(orm) for orm in orms]
 
     async def average_salary(self, area_id: int, keyword: str) -> tuple[float | None, int]:
+        """Compute AVG(salary_amount) for matching resumes; ignore rows with NULL salary."""
         stmt = (
             select(
                 func.avg(ResumeORM.salary_amount),
@@ -39,6 +44,7 @@ class SqlResumeRepository:
         return (float(avg) if avg is not None else None, count)
 
     async def median_salary(self, area_id: int, keyword: str) -> tuple[float | None, int]:
+        """Compute median via Postgres percentile_cont(0.5); ignore NULL salaries."""
         stmt = (
             select(
                 func.percentile_cont(0.5).within_group(ResumeORM.salary_amount.asc()),
@@ -58,6 +64,7 @@ class SqlResumeRepository:
         keyword: str | None,
         limit: int,
     ) -> list[tuple[str, int]]:
+        """Return top N skills by frequency; tie-break alphabetically by skill name."""
         stmt = select(
             ResumeSkillORM.skill,
             func.count(ResumeSkillORM.resume_id).label("cnt"),
@@ -70,7 +77,10 @@ class SqlResumeRepository:
 
         stmt = (
             stmt.group_by(ResumeSkillORM.skill)
-            .order_by(func.count(ResumeSkillORM.resume_id).desc())
+            .order_by(
+                func.count(ResumeSkillORM.resume_id).desc(),
+                ResumeSkillORM.skill.asc(),
+            )
             .limit(limit)
         )
 

@@ -5,6 +5,8 @@ from dataclasses import dataclass
 
 @dataclass
 class Resume:
+    """Normalized resume parsed from an external source (hh.ru)."""
+
     external_id: str
     title: str
     first_name: str | None
